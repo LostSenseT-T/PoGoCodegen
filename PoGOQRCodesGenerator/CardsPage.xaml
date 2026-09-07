@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:models="clr-namespace:PoGOQRCodesGenerator.Models"
+             x:Class="PoGOQRCodesGenerator.CardsPage" x:DataType="models:BatchInput"
+             Title="Cards for duplex printing" SizeChanged="OnPageSizeChanged">
+    <ContentPage.Resources>
+        <Style x:Key="SectionTitle" TargetType="Label">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="Padding" Value="0,12,0,8" />
+        </Style>
+        <Style x:Key="Hint" TargetType="Label">
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+    </ContentPage.Resources>
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="12" MaximumWidthRequest="1250" HorizontalOptions="Fill">
+            <Label Text="Cards for duplex printing" FontSize="26" FontAttributes="Bold" />
+            <Label Text="A4 · portrait cards 3:4 · front/back positions are paired automatically" />
+            <Grid x:Name="WorkspaceGrid" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="24" RowSpacing="16">
+                <VerticalStackLayout x:Name="SettingsPanel" Grid.Column="0" Spacing="10">
+                    <toolkit:Expander IsExpanded="True">
+                        <toolkit:Expander.Header><Label Text="1. Codes and expiry date" Style="{StaticResource SectionTitle}" /></toolkit:Expander.Header>
+                        <VerticalStackLayout Spacing="8">
+                            <Editor Text="{Binding Codes}" HeightRequest="120" TextChanged="OnSettingChanged"
+                                    Placeholder="Codes separated by commas, spaces or line breaks" />
+                            <Label Text="URL template" />
+                            <Entry Text="{Binding UrlTemplate}" TextChanged="OnSettingChanged" />
+                            <Label Text="Expiry date for this batch" />
+                            <DatePicker x:Name="ExpiryPicker" Format="dd MMM yyyy" DateSelected="OnSettingChanged" />
+                        </VerticalStackLayout>
+                    </toolkit:Expander>
+                    <toolkit:Expander IsExpanded="True">
+                        <toolkit:Expander.Header><Label Text="2. Card design" Style="{StaticResource SectionTitle}" /></toolkit:Expander.Header>
+                        <VerticalStackLayout Spacing="8">
+                            <Picker x:Name="TemplatePicker" x:DataType="{x:Null}" Title="Saved templates" ItemDisplayBinding="{Binding Name}" SelectedIndexChanged="OnTemplateSelected" />
+                            <Entry x:Name="TemplateNameEntry" Placeholder="Template name" TextChanged="OnSettingChanged" />
+                            <FlexLayout Wrap="Wrap" JustifyContent="Start">
+                                <Button Text="Save template" Clicked="OnSaveTemplateClicked" />
+                                <Button Text="New template" Margin="8,0,0,0" Clicked="OnNewTemplateClicked" />
+                            </FlexLayout>
+                            <Label Text="Import one card per image. The back panel must have no QR or expiry text. Images are fitted without stretching." Style="{StaticResource Hint}" />
+                            <Button Text="Load front panel (PNG / JPEG)" Clicked="OnPickFrontClicked" />
+                            <Label x:Name="FrontFileLabel" Text="No front panel loaded" Style="{StaticResource Hint}" />
+                            <Button Text="Load back panel (PNG / JPEG)" Clicked="OnPickBackClicked" />
+                            <Label x:Name="BackFileLabel" Text="No back panel loaded" Style="{StaticResource Hint}" />
+                        </VerticalStackLayout>
+                    </toolkit:Expander>
+                    <toolkit:Expander IsExpanded="True">
+                        <toolkit:Expander.Header><Label Text="3. QR and date placement" Style="{StaticResource SectionTitle}" /></toolkit:Expander.Header>
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Positions are percentages of the card. QR size is a percentage of card width; the QR stays square." Style="{StaticResource Hint}" />
+                            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Label Text="QR left (%)" /><Label Grid.Column="1" Text="QR top (%)" /><Label Grid.Column="2" Text="QR size (%)" />
+                                <Entry x:Name="QrLeftEntry" Grid.Row="1" Keyboard="Numeric" TextChanged="OnSettingChanged" />
+                                <Entry x:Name="QrTopEntry" Grid.Row="1" Grid.Column="1" Keyboard="Numeric" TextChanged="OnSettingChanged" />
+                                <Entry x:Name="QrWidthEntry" Grid.Row="1" Grid.Column="2" Keyboard="Numeric" TextChanged="OnSettingChanged" />
+                            </Grid>
+                            <Label Text="QR size" />
+                            <Slider x:Name="QrSizeSlider" Minimum="10" Maximum="100" Value="85" ValueChanged="OnQrSizeChanged" />
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="8">
+                                <Label Text="Date left (%)" /><Label Grid.Column="1" Text="Date top (%)" />
+                                <Entry x:Name="DateLeftEntry" Grid.Row="1" Keyboard="Numeric" TextChanged="OnSettingChanged" />
+                                <Entry x:Name="DateTopEntry" Grid.Row="1" Grid.Column="1" Keyboard="Numeric" TextChanged="OnSettingChanged" />
+                                <Label Grid.Row="2" Text="Date width (%)" /><Label Grid.Row="2" Grid.Column="1" Text="Date height (%)" />
+                                <Entry x:Name="DateWidthEntry" Grid.Row="3" Keyboard="Numeric" TextChanged="OnSettingChanged" />
+                                <Entry x:Name="DateHeightEntry" Grid.Row="3" Grid.Column="1" Keyboard="Numeric" TextChanged="OnSettingChanged" />
+                            </Grid>
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="8">
+                                <Label Text="Font size (pt)" /><Label Grid.Column="1" Text="Date color" />
+                                <Entry x:Name="FontSizeEntry" Grid.Row="1" Keyboard="Numeric" TextChanged="OnSettingChanged" />
+                                <Entry x:Name="DateColorEntry" Grid.Row="1" Grid.Column="1" TextChanged="OnSettingChanged" />
+                                <Label Grid.Row="2" Text="Date prefix" /><Label Grid.Row="2" Grid.Column="1" Text="QR color" />
+                                <Entry x:Name="DatePrefixEntry" Grid.Row="3" TextChanged="OnSettingChanged" />
+                                <Entry x:Name="QrColorEntry" Grid.Row="3" Grid.Column="1" TextChanged="OnSettingChanged" />
+                            </Grid>
+                            <Picker x:Name="DateFormatPicker" Title="Date format" SelectedIndexChanged="OnSettingChanged">
+                                <Picker.Items>
+                                <x:String>dd MMM</x:String><x:String>dd MMM yyyy</x:String><x:String>yyyy-MM-dd</x:String>
+                                </Picker.Items>
+                            </Picker>
+                            <Picker x:Name="AlignmentPicker" Title="Date alignment" SelectedIndexChanged="OnSettingChanged">
+                                <Picker.Items>
+                                <x:String>Left</x:String><x:String>Center</x:String><x:String>Right</x:String>
+                                </Picker.Items>
+                            </Picker>
+                            <Label x:Name="FontLabel" Text="Font: Open Sans" Style="{StaticResource Hint}" />
+                            <FlexLayout Wrap="Wrap" JustifyContent="Start">
+                                <Button Text="Load font" Clicked="OnPickFontClicked" />
+                                <Button Text="Use Open Sans" Margin="8,0,0,0" Clicked="OnResetFontClicked" />
+                            </FlexLayout>
+                        </VerticalStackLayout>
+                    </toolkit:Expander>
+                    <toolkit:Expander IsExpanded="True">
+                        <toolkit:Expander.Header><Label Text="4. Sheet and duplex printing" Style="{StaticResource SectionTitle}" /></toolkit:Expander.Header>
+                        <VerticalStackLayout Spacing="8">
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="8">
+                                <Label Text="Columns" /><Label Grid.Column="1" Text="Rows" />
+                                <Entry x:Name="ColumnsEntry" Grid.Row="1" Keyboard="Numeric" TextChanged="OnSettingChanged" />
+                                <Entry x:Name="RowsEntry" Grid.Row="1" Grid.Column="1" Keyboard="Numeric" TextChanged="OnSettingChanged" />
+                                <Label Grid.Row="2" Text="Card width (mm)" /><Label Grid.Row="2" Grid.Column="1" Text="Gap (mm)" />
+                                <Entry x:Name="CardWidthEntry" Grid.Row="3" Keyboard="Numeric" TextChanged="OnSettingChanged" />
+                                <Entry x:Name="GapEntry" Grid.Row="3" Grid.Column="1" Keyboard="Numeric" TextChanged="OnSettingChanged" />
+                            </Grid>
+                            <Picker x:Name="FlipPicker" Title="Duplex flip edge" SelectedIndexChanged="OnSettingChanged">
+                                <Picker.Items>
+                                <x:String>Long edge — reverse columns</x:String>
+                                <x:String>Short edge — reverse rows</x:String>
+                                </Picker.Items>
+                            </Picker>
+                            <Label Text="Choose the same flip edge in your printer settings. Artwork and QR remain readable; only their positions are mirrored." Style="{StaticResource Hint}" />
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Label Text="Back shift X (mm)" /><Label Grid.Column="1" Text="Back shift Y (mm)" />
+                                <Entry x:Name="OffsetXEntry" Grid.Row="1" Keyboard="Numeric" TextChanged="OnSettingChanged" />
+                                <Entry x:Name="OffsetYEntry" Grid.Row="1" Grid.Column="1" Keyboard="Numeric" TextChanged="OnSettingChanged" />
+                            </Grid>
+                            <Label Text="Calibration: positive X moves the back right; positive Y moves it down, as viewed in the PDF." Style="{StaticResource Hint}" />
+                            <HorizontalStackLayout><CheckBox x:Name="CropMarksCheck" IsChecked="True" CheckedChanged="OnSettingChanged" /><Label Text="Cut marks outside the grid" VerticalOptions="Center" /></HorizontalStackLayout>
+                            <Picker x:Name="ExportModePicker" Title="PDF output" SelectedIndexChanged="OnSettingChanged">
+                                <Picker.Items>
+                                <x:String>Duplex PDF — paired fronts and backs</x:String>
+                                <x:String>Separate front.pdf and backs.pdf</x:String>
+                                </Picker.Items>
+                            </Picker>
+                            <Label Text="Duplex: unused positions stay empty on both sides. Separate: front.pdf is a full reusable sheet; discard the extra fronts on the last sheet." Style="{StaticResource Hint}" />
+                        </VerticalStackLayout>
+                    </toolkit:Expander>
+                </VerticalStackLayout>
+                <VerticalStackLayout x:Name="PreviewPanel" Grid.Column="1" Spacing="12">
+                    <Label Text="Card preview" Style="{StaticResource SectionTitle}" />
+                    <Picker x:Name="CardSidePicker" SelectedIndexChanged="OnSettingChanged">
+                        <Picker.Items>
+                        <x:String>Front panel</x:String><x:String>Back with QR and expiry</x:String>
+                        </Picker.Items>
+                    </Picker>
+                    <Grid x:Name="CardPreviewSurface" WidthRequest="300" HeightRequest="400" HorizontalOptions="Center" BackgroundColor="White">
+                        <Grid.GestureRecognizers><PanGestureRecognizer PanUpdated="OnCardPanUpdated" /></Grid.GestureRecognizers>
+                        <Image x:Name="CardPreviewImage" Aspect="AspectFit" InputTransparent="True" />
+                    </Grid>
+                    <Picker x:Name="DragTargetPicker" Title="Move in preview">
+                        <Picker.Items>
+                        <x:String>Move QR area (blue)</x:String><x:String>Move date area (orange)</x:String>
+                        </Picker.Items>
+                    </Picker>
+                    <Label Text="Drag the card preview to move the selected area. Change its size in the placement settings. Colored guides are not printed." Style="{StaticResource Hint}" />
+                    <Label Text="Print preview" Style="{StaticResource SectionTitle}" />
+                    <Label x:Name="SummaryLabel" />
+                    <Label x:Name="ValidationLabel" TextColor="#B42318" />
+                    <Picker x:Name="PagePicker" Title="Preview page" SelectedIndexChanged="OnSettingChanged" />
+                    <Image x:Name="SheetPreviewImage" Aspect="AspectFit" HeightRequest="520" BackgroundColor="White" />
+                    <Label Text="Print A4 at 100% / Actual size with the selected duplex edge, at 300 dpi or higher. Check alignment and scan a QR on one test sheet before printing the batch." Style="{StaticResource Hint}" />
+                    <Button x:Name="ExportButton" Text="Export print PDF" Clicked="OnExportClicked" />
+                    <ProgressBar x:Name="ExportProgress" Progress="0" IsVisible="False" />
+                    <Button x:Name="CancelButton" Text="Cancel export" IsVisible="False" Clicked="OnCancelExportClicked" />
+                    <Label x:Name="StatusLabel" />
+                </VerticalStackLayout>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

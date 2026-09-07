@@ -1,6 +1,10 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoGOQRCodesGenerator", "PoGOQRCodesGenerator\PoGOQRCodesGenerator.csproj", "{11731C19-4A8E-4EA3-8EF0-E43AE5FD3282}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoGOQRCodesGenerator.Printing", "PoGOQRCodesGenerator.Printing\PoGOQRCodesGenerator.Printing.csproj", "{6A348A06-BFAA-4F17-AB03-283DE0C40279}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoGOQRCodesGenerator.Printing.Tests", "PoGOQRCodesGenerator.Printing.Tests\PoGOQRCodesGenerator.Printing.Tests.csproj", "{B3D813CC-927B-4AAA-8188-50EE4F5CE930}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +16,16 @@ Global
 		{11731C19-4A8E-4EA3-8EF0-E43AE5FD3282}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11731C19-4A8E-4EA3-8EF0-E43AE5FD3282}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11731C19-4A8E-4EA3-8EF0-E43AE5FD3282}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A348A06-BFAA-4F17-AB03-283DE0C40279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A348A06-BFAA-4F17-AB03-283DE0C40279}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A348A06-BFAA-4F17-AB03-283DE0C40279}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A348A06-BFAA-4F17-AB03-283DE0C40279}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3D813CC-927B-4AAA-8188-50EE4F5CE930}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3D813CC-927B-4AAA-8188-50EE4F5CE930}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3D813CC-927B-4AAA-8188-50EE4F5CE930}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3D813CC-927B-4AAA-8188-50EE4F5CE930}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

@@ -1,8 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <!-- Desktop is the default on Windows; opt in to mobile targets with -p:BuildWindowsOnly=false. -->
+        <BuildWindowsOnly Condition="'$(BuildWindowsOnly)' == '' and $([MSBuild]::IsOSPlatform('windows'))">true</BuildWindowsOnly>
         <TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
         <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+        <TargetFrameworks Condition="'$(BuildWindowsOnly)' == 'true'">net8.0-windows10.0.19041.0</TargetFrameworks>
         <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
         <!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
 
@@ -16,6 +19,7 @@
         <OutputType>Exe</OutputType>
         <RootNamespace>PoGOQRCodesGenerator</RootNamespace>
         <UseMaui>true</UseMaui>
+        <MauiVersion>8.0.100</MauiVersion>
         <SingleProject>true</SingleProject>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -36,6 +40,15 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
         <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+        <!-- Run the local executable without deploying an MSIX package. -->
+        <WindowsPackageType Condition="'$(WindowsPackageType)' == ''">None</WindowsPackageType>
+        <!-- Windows App SDK 1.5 uses the versioned Windows runtime identifiers. -->
+        <UseRidGraph>true</UseRidGraph>
+        <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' and ('$(Platform)' == 'x86' or '$(Platform)' == 'ARM64')">win10-$(Platform.ToLowerInvariant())</RuntimeIdentifier>
+        <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win10-x64</RuntimeIdentifier>
     </PropertyGroup>
 
     <ItemGroup>
@@ -62,6 +75,12 @@
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1"/>
         <PackageReference Include="QRCoder" Version="1.7.0" />
+        <PackageReference Include="SkiaSharp" Version="3.119.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\PoGOQRCodesGenerator.Printing\PoGOQRCodesGenerator.Printing.csproj" />
+        <MauiAsset Include="Resources\Fonts\OpenSans-Regular.ttf" LogicalName="PrintFont.ttf" />
     </ItemGroup>
 
 </Project>

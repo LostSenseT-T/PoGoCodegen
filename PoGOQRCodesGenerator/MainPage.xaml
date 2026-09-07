@@ -3,25 +3,28 @@
     x:Class="PoGOQRCodesGenerator.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:PoGOQRCodesGenerator.Models"
+    x:DataType="models:BatchInput"
     Title="PoGO QR Codes Generator">
 
     <ContentPage.Content>
         <ScrollView>
             <VerticalStackLayout Padding="16" Spacing="16">
 
-                <Label Text="Promo codes (one per line):"
+                <Label Text="Promo codes (separate with commas, spaces, or line breaks):"
                        FontAttributes="Bold" />
 
                 <Editor x:Name="CodesEditor"
+                        Text="{Binding Codes}"
                         AutoSize="TextChanges"
                         HeightRequest="150"
-                        Placeholder="3JW4CDS5L4DBK&#10;AB4C1234EF6H" />
+                        Placeholder="3AUE8C9XLPCVY, 3AV4PFQ5GYQKZ&#10;3AV9L68KDCM96" />
 
                 <Label Text="Base URL template:"
                        FontAttributes="Bold" />
 
                 <Entry x:Name="BaseUrlEntry"
-                       Text="https://store.pokemongo.com/offer-redemption?passcode={code}" />
+                        Text="{Binding UrlTemplate}" />
 
                 <Button Text="Save all QR"
                         Clicked="OnSaveQrClicked" />

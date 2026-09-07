@@ -7,9 +7,9 @@
     Shell.FlyoutBehavior="Disabled"
     Title="PoGOQRCodesGenerator">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <ShellContent Title="QR images" ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage" />
+        <ShellContent Title="Print cards" ContentTemplate="{DataTemplate local:CardsPage}" Route="CardsPage" />
+    </TabBar>
 
 </Shell>

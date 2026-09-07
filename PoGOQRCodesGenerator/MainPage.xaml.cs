@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Maui.Storage;
 using QRCoder;
+using PoGOQRCodesGenerator.Models;
+using PoGOQRCodesGenerator.Printing;
 
 namespace PoGOQRCodesGenerator;
 
@@ -8,27 +10,21 @@ public partial class MainPage
     public MainPage()
     {
         InitializeComponent();
+        BindingContext = BatchInput.Shared;
     }
 
     private async void OnSaveQrClicked(object sender, EventArgs e)
     {
         StatusLabel.Text = string.Empty;
 
-        string baseUrlTemplate = BaseUrlEntry.Text.Trim();
+        string baseUrlTemplate = BaseUrlEntry.Text?.Trim() ?? string.Empty;
         if (string.IsNullOrWhiteSpace(baseUrlTemplate))
         {
             await DisplayAlert("Failed", "Base URL empty.", "OK");
             return;
         }
 
-        string text = CodesEditor.Text;
-
-        List<string> codes = text
-            .Split(['\r', '\n', ' '], StringSplitOptions.RemoveEmptyEntries)
-            .Select(c => c.Trim())
-            .Where(c => !string.IsNullOrWhiteSpace(c))
-            .Distinct()
-            .ToList();
+        List<string> codes = PromoCodes.Parse(CodesEditor.Text);
 
         if (codes.Count == 0)
         {
