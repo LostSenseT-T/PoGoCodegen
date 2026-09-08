@@ -1,39 +1,39 @@
 # PoGoCodegen
 
-.NET MAUI застосунок для генерації QR-кодів Pokémon GO та PDF із картками для двостороннього друку.
+.NET MAUI application for generating Pokémon GO QR codes and printable PDF cards for duplex printing.
 
-## Використання
+## Usage
 
-- **QR images**: вставте промокоди через коми, пробіли або переноси рядків і збережіть окремі PNG.
-- **Print cards**: вставте коди, задайте дату завершення дії та завантажте зображення **однієї** лицьової й зворотної сторони картки. Список кодів і шаблон URL спільні для обох вкладок.
-- Зворотний фон має містити постійне оформлення, але не старий QR чи дату. PNG/JPEG імпортуються без розтягування, зі збереженням пропорцій. Картки мають вертикальну пропорцію 3:4.
-- Області QR і дати задаються у відсотках від картки. Перетягуйте вибрану область на попередньому перегляді; розмір QR змінюється повзунком або числом. QR завжди квадратний і містить біле захисне поле.
-- Для дати можна вибрати формат, префікс, вирівнювання, колір, розмір і власний TTF/OTF шрифт. Якщо напис не поміщається, шрифт зменшується до меж області. За замовчуванням використовується вбудований Open Sans.
-- **Save template** зберігає дизайн, картинки, власний шрифт, положення елементів і параметри друку локально. Завантажте його через список **Saved templates**. **New template** починає новий дизайн; поточні незбережені налаштування буде скинуто.
+* **QR images**: paste promo codes separated by commas, spaces, or line breaks and save them as individual PNG files.
+* **Print cards**: paste the codes, set the expiration date, and upload an image of **one** front side and one back side of the card. The code list and URL template are shared between both tabs.
+* The back background should contain the permanent design, but no outdated QR code or date. PNG/JPEG images are imported without stretching while preserving their aspect ratio. Cards use a vertical 3:4 aspect ratio.
+* QR and date areas are defined as percentages of the card dimensions. Drag the selected area in the preview; the QR size can be adjusted using the slider or a numeric value. The QR code is always square and includes a white quiet zone.
+* For the date, you can configure the format, prefix, alignment, color, size, and a custom TTF/OTF font. If the text does not fit, the font size is automatically reduced to fit within the defined area. The built-in Open Sans font is used by default.
+* **Save template** stores the design, images, custom font, element positions, and print settings locally. Load it from the **Saved templates** list. **New template** starts a new design; current unsaved settings will be reset.
 
-## Двосторонній друк
+## Duplex Printing
 
-За замовчуванням: A4 (210 × 297 мм), сітка 4 × 4, картка 45 × 60 мм, проміжок 2 мм. Вся сітка центрується. Можна змінювати кількість рядків і стовпців, ширину картки й проміжки; висота автоматично зберігає пропорцію 3:4. Застосунок перевіряє, що сітка поміщається з полями.
+Default settings: A4 (210 × 297 mm), 4 × 4 grid, 45 × 60 mm cards, 2 mm spacing. The entire grid is centered. You can change the number of rows and columns, card width, and spacing; the card height is automatically calculated to preserve the 3:4 aspect ratio. The application verifies that the grid fits on the page with the required margins.
 
-- **Long edge**: звороти віддзеркалюються по горизонталі. Для кожної картки `backX = 210 − frontX − cardWidth`; Y зберігається.
-- **Short edge**: звороти віддзеркалюються по вертикалі. `backY = 297 − frontY − cardHeight`; X зберігається.
-- Віддзеркалюються **позиції**, а не самі зображення, QR чи текст. Порядок і відповідність кодів не змінюються.
-- **Back shift X/Y**: поправка у міліметрах після віддзеркалення. Додатні значення зсувають зворот праворуч/вниз, якщо дивитися на сторінку PDF. За нульових поправок пари геометрично суміщені.
-- Мітки різання розташовуються поза всією сіткою, а не поверх карток.
+* **Long edge**: card backs are mirrored horizontally. For each card, `backX = 210 − frontX − cardWidth`; Y remains unchanged.
+* **Short edge**: card backs are mirrored vertically. `backY = 297 − frontY − cardHeight`; X remains unchanged.
+* Only the **positions** are mirrored, not the images, QR codes, or text themselves. The order and mapping of codes remain unchanged.
+* **Back shift X/Y**: an adjustment in millimeters applied after mirroring. Positive values move the back side to the right/down when viewing the PDF page. With zero adjustments, front/back pairs are geometrically aligned.
+* Crop marks are placed outside the entire grid rather than on top of the cards.
 
-### Режими експорту
+### Export Modes
 
-**Duplex PDF** створює `cards.pdf`: лице першого аркуша, його зворот, лице другого аркуша, його зворот тощо. Для 15/16 кодів це 2 сторінки, для 17/30/32 — 4. Незайняті місця залишаються порожніми на **обох** сторонах у відповідних позиціях.
+**Duplex PDF** creates `cards.pdf`: front side of the first sheet, its back side, front side of the second sheet, its back side, and so on. For 15/16 codes, the PDF contains 2 pages; for 17/30/32 codes, it contains 4 pages. Unused positions remain empty on **both** sides at the corresponding locations.
 
-**Separate** створює два файли: `front.pdf` із повною спільною лицьовою сторінкою та `backs.pdf` із потрібною кількістю дзеркально розкладених зворотів. Надрукуйте стільки копій front.pdf, скільки сторінок у backs.pdf. На останньому аркуші зайві лицьові картки не матимуть QR на звороті — їх слід відкинути.
+**Separate** creates two files: `front.pdf` containing the complete shared front page and `backs.pdf` containing the required number of mirrored back pages. Print as many copies of `front.pdf` as there are pages in `backs.pdf`. On the final sheet, extra front cards will not have QR codes on the back and should be discarded.
 
-У діалозі принтера вибирайте **A4**, **100% / Actual size** та **той самий край перевертання**, що й у застосунку. Не додавайте дзеркальне відображення або повторну розкладку «кілька сторінок на аркуші» у драйвері. Спочатку надрукуйте один пробний аркуш, перевірте суміщення й відскануйте QR. Корекція X/Y компенсує сталий зсув принтера, але не перекіс подачі паперу.
+In the printer dialog, select **A4**, **100% / Actual size**, and **the same flip edge** as configured in the application. Do not enable additional mirroring or “multiple pages per sheet” layout in the printer driver. First, print one test sheet, verify alignment, and scan the QR codes. X/Y correction compensates for a consistent printer offset, but not for paper feed skew.
 
-PDF містить растрові фони без втрат, векторні QR та текст дати. Рекомендована роздільна здатність друку — 300 dpi або вище; растрова перевірка читання всіх QR виконана при 300 dpi. Це звичайний PDF для друку, без підготовки PDF/X, CMYK чи вильотів під обріз.
+The PDF contains lossless raster backgrounds, vector QR codes, and vector date text. The recommended print resolution is 300 dpi or higher; raster QR readability validation is performed at 300 dpi. This is a standard print-ready PDF without PDF/X preparation, CMYK conversion, or bleed.
 
-## Збірка та перевірки
+## Build and Verification
 
-На Windows проєкт за замовчуванням завантажує лише Windows-ціль. `global.json` вибирає SDK 9.0.3xx (9.0.300 або новіше виправлення в цій серії), сумісний із Rider 2025.1; цільова версія застосунку залишається .NET 8. Для запуску потрібен .NET 8 Runtime. Windows-збірка запускається як звичайний x64-застосунок, без розгортання MSIX.
+On Windows, the project loads only the Windows target by default. `global.json` selects SDK 9.0.3xx (9.0.300 or a newer patch in that series), which is compatible with Rider 2025.1; the application target remains .NET 8. The .NET 8 Runtime is required to run the application. The Windows build runs as a regular x64 application without MSIX deployment.
 
 ```powershell
 dotnet build PoGOQRCodesGenerator.sln
@@ -41,17 +41,26 @@ dotnet run --project PoGOQRCodesGenerator/PoGOQRCodesGenerator.csproj -f net8.0-
 dotnet test PoGOQRCodesGenerator.Printing.Tests/PoGOQRCodesGenerator.Printing.Tests.csproj
 ```
 
-У Rider відкривайте `PoGOQRCodesGenerator.sln` із кореня репозиторію. Після зміни SDK перезавантажте рішення, якщо IDE не зробила це автоматично. У **Run → Edit Configurations → .NET Launch Settings Profile** виберіть **PoGOQRCodesGenerator: Windows Machine**. Він використовує Windows-ціль і `Windows Machine (Project)` із `launchSettings.json`. Старий профіль **UWP** шукає MSIX-пакет і для цього режиму завершується помилкою `Could not load appxrecipe`. Якщо IDE використовує інший SDK, перевірте **Settings → Build, Execution, Deployment → Toolset and Build**: `.NET CLI` — `C:\Program Files\dotnet\dotnet.exe`, MSBuild — із SDK, вибраного `global.json`.
+In Rider, open `PoGOQRCodesGenerator.sln` from the repository root. After changing the SDK, reload the solution if the IDE does not do so automatically. Under **Run → Edit Configurations → .NET Launch Settings Profile**, select **PoGOQRCodesGenerator: Windows Machine**. It uses the Windows target and `Windows Machine (Project)` from `launchSettings.json`.
 
-Щоб повернути мобільні цілі на Windows, задайте `-p:BuildWindowsOnly=false`; для них потрібні відповідні .NET MAUI workloads і платформні SDK. На інших ОС ці цілі збережені за замовчуванням. `BuildWindowsOnly` обмежує цілі лише застосунку; бібліотека друку залишається звичайною бібліотекою .NET 8. Пакетне розгортання можна ввімкнути через `-p:WindowsPackageType=MSIX` із відповідним профілем запуску.
+The old **UWP** profile looks for an MSIX package and fails in this mode with the `Could not load appxrecipe` error.
 
-Структура:
+If the IDE uses a different SDK, check **Settings → Build, Execution, Deployment → Toolset and Build**:
 
-- `PoGOQRCodesGenerator` — інтерфейс, імпорт файлів і системне збереження PDF.
-- `PoGOQRCodesGenerator.Printing` — розбір кодів, шаблони, дзеркальна геометрія й спільний рендерер для попереднього перегляду та PDF (QRCoder + SkiaSharp).
-- `PoGOQRCodesGenerator.Printing.Tests` — перевірки пар сторінок, неповних аркушів, меж, калібрування, читання QR, фізичного розміру PDF та збереження шаблонів.
+* `.NET CLI` — `C:\Program Files\dotnet\dotnet.exe`
+* MSBuild — from the SDK selected by `global.json`
 
-Для створення пробних файлів задайте `POGO_PRINT_TEST_OUTPUT` перед запуском тестів. Тести використовують синтетичний дизайн і коди `SAMPLE…`, а не робочі промокоди:
+To restore mobile targets on Windows, set `-p:BuildWindowsOnly=false`; the corresponding .NET MAUI workloads and platform SDKs are required. On other operating systems, these targets remain enabled by default.
+
+`BuildWindowsOnly` limits only the application targets; the printing library remains a standard .NET 8 library. Packaged deployment can be enabled using `-p:WindowsPackageType=MSIX` with the corresponding launch profile.
+
+Structure:
+
+* `PoGOQRCodesGenerator` — UI, file importing, and system PDF saving.
+* `PoGOQRCodesGenerator.Printing` — code parsing, templates, mirrored geometry, and a shared renderer used for both preview and PDF generation (QRCoder + SkiaSharp).
+* `PoGOQRCodesGenerator.Printing.Tests` — tests for page pairs, partially filled sheets, boundaries, calibration, QR readability, physical PDF dimensions, and template persistence.
+
+To generate test output files, set `POGO_PRINT_TEST_OUTPUT` before running the tests. The tests use a synthetic design and `SAMPLE…` codes rather than actual promo codes:
 
 ```powershell
 $env:POGO_PRINT_TEST_OUTPUT = "$PWD/artifacts/print-validation"
@@ -63,4 +72,4 @@ $env:POGO_VERIFY_RENDERED_PDFS = "$PWD/artifacts/print-validation"
 dotnet test PoGOQRCodesGenerator.Printing.Tests/PoGOQRCodesGenerator.Printing.Tests.csproj
 ```
 
-Остання перевірка декодує всі 30 QR в їхніх очікуваних фізичних позиціях у кожному варіанті двостороннього PDF та перевіряє порожні місця. Без підготовлених Poppler-зображень вона позначається як пропущена; решта тестів працює без Poppler.
+The final verification step decodes all 30 QR codes at their expected physical positions in each duplex PDF variant and verifies all empty positions. Without prepared Poppler-rendered images, this test is marked as skipped; all other tests run without Poppler.
